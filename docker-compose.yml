@@ -20,11 +20,11 @@ services:
       - ../developerhappiness.app:/app
     working_dir: /app
     ports:
-      - "4000:4000"
+      - "3000:3000"
     depends_on:
       - postgres
     environment:
-      PORT: 4000
+      PORT: 3000
 
 volumes:
   pg-data:
