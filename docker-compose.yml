@@ -1,0 +1,30 @@
+version: '3.8'
+services:
+  postgres:
+    container_name: "devhappy-postgres"
+    image: postgres:latest
+    restart: always
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - 5432:5432
+    command: postgres -c 'max_connections=500'
+  api:
+    container_name: "devhappy-api"
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    volumes:
+      - ../developerhappiness.app:/app
+    working_dir: /app
+    ports:
+      - "4000:4000"
+    depends_on:
+      - postgres
+    environment:
+      PORT: 4000
+
+volumes:
+  pg-data:
