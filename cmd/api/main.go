@@ -1,7 +1,7 @@
 package main
 
 import (
-	"encoding/json"
+	"github.com/dviramontes/developerhappiness.app/pkg/api"
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
 	"github.com/go-chi/cors"
@@ -10,21 +10,13 @@ import (
 	"time"
 )
 
-type SlackURLVerifyPayload struct {
-	Token     string `json:"token"`
-	Challenge string `json:"challenge"`
-	Type      string `json:"type"`
-}
-
-type SlackURLVerifyResponse struct {
-	Challenge string `json:"challenge"`
-}
-
 func main() {
+	API := api.New()
+
 	r := chi.NewRouter()
 	r.Use(middleware.Logger)
 
-	// Basic CORS
+	// basic CORS
 	cors := cors.New(cors.Options{
 		AllowedOrigins:   []string{"*"},
 		AllowedMethods:   []string{"GET", "POST"},
@@ -50,16 +42,8 @@ func main() {
 	})
 
 	r.Route("/api", func(r chi.Router) {
-		r.Post("/webhook", func(w http.ResponseWriter, r *http.Request) {
-			var sURLVerify SlackURLVerifyPayload
-			if err := json.NewDecoder(r.Body).Decode(&sURLVerify); err != nil {
-				http.Error(w, "error decoding json payload from slack verify webhook", http.StatusInternalServerError)
-				return
-			}
-			// respond with JSON Challenge
-			res := SlackURLVerifyResponse{sURLVerify.Challenge}
-			w.WriteHeader(http.StatusOK)
-			json.NewEncoder(w).Encode(res)
+		r.Route("/webhook", func(r chi.Router) {
+			r.Post("/slack", API.SlackVerify)
 		})
 	})
 
