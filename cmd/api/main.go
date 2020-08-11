@@ -1,16 +1,25 @@
 package main
 
 import (
+	"fmt"
 	"github.com/dviramontes/developerhappiness.app/pkg/api"
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
 	"github.com/go-chi/cors"
 	"github.com/go-chi/render"
 	"net/http"
+	"os"
 	"time"
 )
 
 func main() {
+	var port string
+
+	port = os.Getenv("PORT")
+	if port == "" {
+		port = "3000"
+	}
+
 	API := api.New()
 
 	r := chi.NewRouter()
@@ -43,9 +52,9 @@ func main() {
 
 	r.Route("/api", func(r chi.Router) {
 		r.Route("/webhook", func(r chi.Router) {
-			r.Post("/slack", API.SlackVerify)
+			r.Post("/slack", API.SlackHandler)
 		})
 	})
 
-	http.ListenAndServe(":3000", r)
+	http.ListenAndServe(fmt.Sprintf(":%s", port), r)
 }

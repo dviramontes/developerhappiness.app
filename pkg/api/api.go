@@ -5,7 +5,7 @@ import (
 	"net/http"
 )
 
-type API struct {}
+type API struct{}
 
 type SlackURLVerifyPayload struct {
 	Token     string `json:"token"`
@@ -21,7 +21,7 @@ func New() *API {
 	return &API{}
 }
 
-func (a *API) SlackVerify(w http.ResponseWriter, r *http.Request) {
+func (a *API) SlackHandler(w http.ResponseWriter, r *http.Request) {
 	var sURLVerify SlackURLVerifyPayload
 	if err := json.NewDecoder(r.Body).Decode(&sURLVerify); err != nil {
 		http.Error(w, "error decoding json payload from slack verify webhook", http.StatusInternalServerError)
