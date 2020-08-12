@@ -45,6 +45,5 @@ Project layout is based on [golang-standards/project-layout](https://github.com/
 
 ### Terms
 - *driver*: TODO: define
-- *interactor*: In an MVC style app, this would be your controller. This Go is not an OOP language this is loosely one of the many styles
-in which a Go app can be organized. 
+- *interactor*: TODO: define
 

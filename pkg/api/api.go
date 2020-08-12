@@ -2,12 +2,14 @@ package api
 
 import (
 	"encoding/json"
+	"github.com/dviramontes/developerhappiness.app/pkg/db"
 	"github.com/spf13/viper"
 	"net/http"
 )
 
 type API struct {
 	config *viper.Viper
+	db     *db.DB
 }
 
 type SlackURLVerifyPayload struct {
@@ -20,9 +22,10 @@ type SlackURLVerifyResponse struct {
 	Challenge string `json:"challenge"`
 }
 
-func New(c *viper.Viper) *API {
+func New(c *viper.Viper, db *db.DB) *API {
 	return &API{
 		config: c,
+		db:     db,
 	}
 }
 

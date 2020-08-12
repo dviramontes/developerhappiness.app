@@ -36,8 +36,9 @@ WORKDIR /home/app
 COPY --from=builder /go/bin/api ./api
 RUN chmod +x ./api
 
-# copy config
+# copy config & react build folder
 COPY --from=builder /go/src/github.com/dviramontes/developerhappiness.app/config.yaml ./config.yaml
+COPY --from=builder /go/src/github.com/dviramontes/developerhappiness.app/client/build ./client/build
 
 USER app
 

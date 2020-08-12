@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"github.com/dviramontes/developerhappiness.app/internal/config"
+	"github.com/dviramontes/developerhappiness.app/pkg/db"
 	"github.com/go-chi/chi"
 	"net/http"
 	"net/http/httptest"
@@ -17,8 +18,13 @@ func NewTestRouter(api *API) *chi.Mux {
 }
 
 func Test_API(t *testing.T) {
-	config := config.Read("config.yaml", nil)
-	testAPI := New(config)
+	config := config.Read("../../config.yaml", nil)
+	db, err := db.Setup("postgres://postgres:postgres@10.254.254.254:5432?sslmode=disable")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	testAPI := New(config, db)
 	router := NewTestRouter(testAPI)
 
 	t.Run("SlackHandler", func(t *testing.T) {

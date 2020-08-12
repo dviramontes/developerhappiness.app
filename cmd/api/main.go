@@ -4,10 +4,12 @@ import (
 	"fmt"
 	"github.com/dviramontes/developerhappiness.app/internal/config"
 	"github.com/dviramontes/developerhappiness.app/pkg/api"
+	"github.com/dviramontes/developerhappiness.app/pkg/db"
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
 	"github.com/go-chi/cors"
 	"github.com/go-chi/render"
+
 	"log"
 	"net/http"
 	"os"
@@ -25,17 +27,24 @@ func main() {
 	}
 
 	conf := config.Read("config.yaml", nil)
+
 	version := conf.GetString("version")
+	connStr := conf.GetString("connStr")
 
 	log.Printf("version :: %s", version)
 
-	API := api.New(conf)
+	database, err := db.Setup(connStr)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	API := api.New(conf, database)
 
 	r := chi.NewRouter()
 	r.Use(middleware.Logger)
 
 	// basic CORS
-	cors := cors.New(cors.Options{
+	corsHandler := cors.New(cors.Options{
 		AllowedOrigins:   []string{"*"},
 		AllowedMethods:   []string{"GET", "POST"},
 		AllowedHeaders:   []string{"Accept", "Authorization", "Content-Type", "X-CSRF-Token"},
@@ -46,12 +55,12 @@ func main() {
 
 	// middleware setup
 	r.Use(
-		cors.Handler,
+		corsHandler.Handler,
 		render.SetContentType(render.ContentTypeJSON), // set content-type headers as application/json
-		middleware.Logger,                         // log api request calls
-		middleware.StripSlashes,                   // match paths with a trailing slash, strip it, and continue routing through the mux
-		middleware.Recoverer,                      // recover from panics without crashing server
-		middleware.Timeout(3000*time.Millisecond), // Stop processing after 3 seconds
+		middleware.Logger,                             // log api request calls
+		middleware.StripSlashes,                       // match paths with a trailing slash, strip it, and continue routing through the mux
+		middleware.Recoverer,                          // recover from panics without crashing server
+		middleware.Timeout(3000*time.Millisecond),     // Stop processing after 3 seconds
 	)
 
 	// obligatory health-check endpoint
