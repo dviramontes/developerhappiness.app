@@ -1,4 +1,4 @@
-.PHONY: deps server test build client
+.PHONY: deps server test build client prod
 
 deps:
 	go get -u ./...
@@ -14,3 +14,6 @@ test:
 
 client:
 	cd client && npm start
+
+prod:
+	docker build -t happydev .

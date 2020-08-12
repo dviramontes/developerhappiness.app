@@ -25,7 +25,7 @@
 ### Setup
 
 - `cd client && npm ci`
-- `cp sample.config.yml config.yml`
+- `cp sample.config.yaml config.yaml`
 
 ### Running
 

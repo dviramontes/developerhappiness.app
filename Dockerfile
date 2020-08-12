@@ -4,6 +4,7 @@ FROM golang:1.14 as base
 WORKDIR /go/src/github.com/dviramontes/developerhappiness.app
 
 ENV GO111MODULE=on
+ENV GOPATH=/go
 
 COPY go.mod .
 COPY go.sum .

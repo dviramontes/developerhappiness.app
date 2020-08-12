@@ -6,7 +6,7 @@ RUN go get github.com/cespare/reflex
 
 COPY reflex.conf /reflex.conf
 
-COPY config.yml /config.yml
+COPY config.yaml /config.yaml
 
 EXPOSE 3000
 
