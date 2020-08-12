@@ -4,9 +4,9 @@ deps:
 	go get -u ./...
 
 build: deps
-	docker-compose up --build
+	cd client && npm run build
 
-run:
+server:
 	docker-compose up -d
 	docker-compose logs -f
 
@@ -14,10 +14,10 @@ test:
 	go test -v ./...
 
 client:
-	cd client && npm run build
+	cd client && npm start
 
 prod:
 	docker build -t happydev .
 
-deploy: client
+deploy: build
 	gcloud app deploy

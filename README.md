@@ -32,7 +32,8 @@ Project layout is based on [golang-standards/project-layout](https://github.com/
 
 ### Development
 
-- `make run`
+- `make server`
+- `make client`
 
 ### Tests
 
