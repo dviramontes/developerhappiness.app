@@ -33,7 +33,7 @@ func main() {
 
 	log.Printf("version :: %s", version)
 
-	database, err := db.Setup(connStr)
+	database, err := db.Connect(connStr)
 	if err != nil {
 		log.Fatal(err)
 	}

@@ -17,7 +17,7 @@ func (db *DB) Migrate() {
 	db.conn.AutoMigrate(&SlackEvent{})
 }
 
-func Setup(connStr string) (*DB, error) {
+func Connect(connStr string) (*DB, error) {
 	pgdb, err := gorm.Open("postgres", connStr)
 	if err != nil {
 		return nil, err
