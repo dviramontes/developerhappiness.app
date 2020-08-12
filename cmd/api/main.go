@@ -2,11 +2,13 @@ package main
 
 import (
 	"fmt"
+	"github.com/dviramontes/developerhappiness.app/internal/config"
 	"github.com/dviramontes/developerhappiness.app/pkg/api"
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
 	"github.com/go-chi/cors"
 	"github.com/go-chi/render"
+	"log"
 	"net/http"
 	"os"
 	"time"
@@ -20,7 +22,12 @@ func main() {
 		port = "3000"
 	}
 
-	API := api.New()
+	conf := config.Read("config.yaml", nil)
+	version := conf.GetString("version")
+
+	log.Printf("version :: %s", version)
+
+	API := api.New(conf)
 
 	r := chi.NewRouter()
 	r.Use(middleware.Logger)

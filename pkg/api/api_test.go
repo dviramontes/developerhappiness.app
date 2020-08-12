@@ -3,6 +3,7 @@ package api
 import (
 	"bytes"
 	"encoding/json"
+	"github.com/dviramontes/developerhappiness.app/internal/config"
 	"github.com/go-chi/chi"
 	"net/http"
 	"net/http/httptest"
@@ -16,7 +17,8 @@ func NewTestRouter(api *API) *chi.Mux {
 }
 
 func Test_API(t *testing.T) {
-	testAPI := New()
+	config := config.Read("config.yaml", nil)
+	testAPI := New(config)
 	router := NewTestRouter(testAPI)
 
 	t.Run("SlackHandler", func(t *testing.T) {
