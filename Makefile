@@ -1,9 +1,9 @@
 .PHONY: deps server test build client prod deploy
 
 deps:
-	go get -u ./...
+	go get ./...
 
-build: deps
+build:
 	cd client && npm run build
 
 server:

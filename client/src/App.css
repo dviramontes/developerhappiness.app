@@ -2,9 +2,8 @@
   text-align: center;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+u {
+  border-bottom: #61dafb;
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -20,7 +19,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
+  font-size: calc(14px + 1vmin);
   color: white;
 }
 
@@ -35,4 +34,22 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+.row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px darkgray solid;
+  width: 85%;
+}
+
+.row p.col {
+  font-size: large;
+  font-size: 32px;
+
+}
+.row p {
+  width: 10%;
+  font-size: 16px;
 }

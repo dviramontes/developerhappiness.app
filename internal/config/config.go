@@ -14,7 +14,7 @@ func Read(path string, defaults map[string]interface{}) *viper.Viper {
 
 	err := v.ReadInConfig()
 	if err != nil {
-		log.Println(err.Error(), "proceeding with defaults")
+		log.Println("proceeding with defaults")
 		for key, val := range defaults {
 			v.SetDefault(key, val)
 		}
