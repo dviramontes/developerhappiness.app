@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { format } from 'timeago.js';
 import './App.css';
 
 interface Row {
@@ -12,22 +13,23 @@ interface Row {
   owner: boolean,
 }
 
-const Row = ({ user, active, bot, email, imgUrl, timezone, admin, owner }: Row) => {
-  return (
-    <div className="row">
-      <p>{user}</p>
-      <p>{active ? "✅" : "❌"}</p>
-      <p>{bot ? "🤖" : "❌"}</p>
-      <p><a href={`mailto:${email}`}>✉️</a></p>
-      <p>{timezone}</p>
-      <p><img src={imgUrl} alt="profile"/></p>
-      <p>{admin ? "✅" : "❌"}</p>
-      <p>{owner ? "✅" : "❌"}</p>
-    </div>
-  )
-}
+const firstRender = Date.now();
+
+const Row = ({ user, active, bot, email, imgUrl, timezone, admin, owner }: Row) => (
+  <div className="row">
+    <p>{user}</p>
+    <p>{active ? "✅" : "❌"}</p>
+    <p>{bot ? "🤖" : "❌"}</p>
+    <p><a href={`mailto:${email}`} target="_blank">✉️</a></p>
+    <p>{timezone}</p>
+    <p><img src={imgUrl} alt="profile"/></p>
+    <p>{admin ? "✅" : "❌"}</p>
+    <p>{owner ? "✅" : "❌"}</p>
+  </div>
+)
 
 export default function App() {
+  const [refresh, setRresh] = useState(Date.now());
   let baseEndpoint;
 
   if (process.env.NODE_ENV === 'production') {
@@ -45,6 +47,7 @@ export default function App() {
     <div className="App">
       <header className="App-header">
         <h1>slack user list</h1>
+        <p className="App-link">Last refreshed: {format(refresh)}</p>
         <h2></h2>
         <div className="row">
           <p className="col">user</p>

@@ -23,6 +23,7 @@ Project layout is based on [golang-standards/project-layout](https://github.com/
 - [golang](https://golang.org/)
 - [docker](https://docs.docker.com/get-docker/)
 - [docker-compose](https://docs.docker.com/compose/install/)
+- [goose for migrations](https://github.com/pressly/goose)
 - (optional) [google cloud sdk for deployment](https://cloud.google.com/sdk/docs/downloads-versioned-archives)
 
 ### Setup
@@ -43,7 +44,14 @@ Project layout is based on [golang-standards/project-layout](https://github.com/
 
 - `make deploy` # deploys app to google cloud engine
 
-### Terms
-- *driver*: TODO: define
-- *interactor*: TODO: define
+### Migrations
 
+with goose installed `go get -u github.com/pressly/goose/cmd/goose`
+
+#### create new migration
+
+`goose create -d migrations add_some_column sql`
+
+#### run migrations
+
+`make migrate`

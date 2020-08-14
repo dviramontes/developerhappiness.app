@@ -1,4 +1,4 @@
-.PHONY: deps server test build client prod deploy
+.PHONY: deps server test build client prod deploy down migrate
 
 deps:
 	go get ./...
@@ -21,3 +21,9 @@ prod:
 
 deploy: build
 	gcloud app deploy
+
+down:
+	docker-compose down
+
+migrate:
+	goose -dir migrations postgres "user=postgres password=postgres dbname=postgres sslmode=disable" up

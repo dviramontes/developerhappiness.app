@@ -35,7 +35,7 @@ func main() {
 
 	database, err := db.Connect(connStr)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalf("failed to connect to database, err: %v", err)
 	}
 
 	API := api.New(conf, database)
@@ -83,7 +83,7 @@ func main() {
 
 func FileServer(r chi.Router, path string, root http.FileSystem) {
 	if strings.ContainsAny(path, "{}*") {
-		panic("FileSever does not permis any URL parameters")
+		panic("FileSever does not allow any URL parameters")
 	}
 
 	if path != "/" && path[len(path)-1] != '/' {

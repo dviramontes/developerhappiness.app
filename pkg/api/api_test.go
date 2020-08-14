@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"github.com/dviramontes/developerhappiness.app/internal/config"
 	"github.com/dviramontes/developerhappiness.app/pkg/db"
+	"github.com/dviramontes/developerhappiness.app/pkg/slack"
 	"github.com/go-chi/chi"
 	"net/http"
 	"net/http/httptest"
@@ -28,9 +29,10 @@ func Test_API(t *testing.T) {
 	router := NewTestRouter(testAPI)
 
 	t.Run("SlackHandler", func(t *testing.T) {
-		var sURLVerify SlackURLVerifyPayload
+		var e slack.Event
+
 		challenge := "super-challenging-token"
-		testEvent := &SlackURLVerifyPayload{
+		testEvent := &slack.Event{
 			Token:     "123",
 			Challenge: challenge,
 			Type:      "event_callback",
@@ -50,11 +52,11 @@ func Test_API(t *testing.T) {
 			t.Fatal(err)
 		}
 
-		if err := json.NewDecoder(res.Body).Decode(&sURLVerify); err != nil {
+		if err := json.NewDecoder(res.Body).Decode(&e); err != nil {
 			t.Error(err)
 		}
 
-		if sURLVerify.Challenge != challenge {
+		if e.Challenge != challenge {
 			t.Error("challenge token does not match!")
 		}
 	})

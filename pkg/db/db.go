@@ -1,6 +1,7 @@
 package db
 
 import (
+	"fmt"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 )
@@ -14,7 +15,11 @@ func new(db *gorm.DB) *DB {
 }
 
 func (db *DB) Migrate() {
-	db.conn.AutoMigrate(&SlackEvent{})
+	db.conn.AutoMigrate(&User{})
+}
+
+func (db *DB) Seed() error {
+	return nil
 }
 
 func Connect(connStr string) (*DB, error) {
@@ -27,6 +32,10 @@ func Connect(connStr string) (*DB, error) {
 	// init db models and migrate
 	db := new(pgdb)
 	db.Migrate()
+
+	if err := db.Seed(); err != nil {
+		return nil, fmt.Errorf("failed to seed database, %v", err)
+	}
 
 	return db, nil
 }
