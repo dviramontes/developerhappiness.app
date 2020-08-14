@@ -10,10 +10,11 @@ Project layout is based on [golang-standards/project-layout](https://github.com/
 {root}
 
 ├── client   # React FE Client
-├── cmd      # Main driver* for Golang app
-├── pkg      # Library code to be used by external applications
-    └── event
-        └──  # Slack Event API Interactor*
+├── internal # Private application and library code
+├── cmd      # Main driver for Golang app (our entry point)
+├── pkg      # Public library code to be used by external applications
+    └── api  # Slack event parsing business logic
+    └── db   # Database connection and models (lightweight schemas provided by gorm)
 ...
 ```
 
@@ -55,3 +56,5 @@ with goose installed `go get -u github.com/pressly/goose/cmd/goose`
 #### run migrations
 
 `make migrate`
+
+### Migrations

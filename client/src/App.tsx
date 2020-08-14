@@ -1,47 +1,63 @@
-import React, { useState } from 'react';
-import { format } from 'timeago.js';
-import './App.css';
+import React, { useState } from "react";
+import { format } from "timeago.js";
+import "./App.css";
 
 interface Row {
-  user: string,
-  active: boolean,
-  bot: boolean,
-  email: string,
-  imgUrl: string,
-  timezone: string,
-  admin: boolean,
-  owner: boolean,
+  user: string;
+  active: boolean;
+  bot: boolean;
+  email: string;
+  imgUrl: string;
+  timezone: string;
+  admin: boolean;
+  owner: boolean;
 }
 
 const firstRender = Date.now();
 
-const Row = ({ user, active, bot, email, imgUrl, timezone, admin, owner }: Row) => (
+const Row = ({
+  user,
+  active,
+  bot,
+  email,
+  imgUrl,
+  timezone,
+  admin,
+  owner,
+}: Row) => (
   <div className="row">
     <p>{user}</p>
     <p>{active ? "✅" : "❌"}</p>
     <p>{bot ? "🤖" : "❌"}</p>
-    <p><a href={`mailto:${email}`} target="_blank">✉️</a></p>
+    <p>
+      <a href={`mailto:${email}`} target="_blank">
+        ✉️
+      </a>
+    </p>
     <p>{timezone}</p>
-    <p><img src={imgUrl} alt="profile"/></p>
+    <p>
+      <img src={imgUrl} alt="profile" />
+    </p>
     <p>{admin ? "✅" : "❌"}</p>
     <p>{owner ? "✅" : "❌"}</p>
   </div>
-)
+);
 
 export default function App() {
-  const [refresh, setRresh] = useState(Date.now());
-  let baseEndpoint;
+  let baseEndpoint: string;
 
-  if (process.env.NODE_ENV === 'production') {
-    baseEndpoint = ""
+  const [refresh, setRresh] = useState(Date.now());
+
+  if (process.env.NODE_ENV === "production") {
+    baseEndpoint = "";
   } else {
-    baseEndpoint = "http://localhost:3000"
+    baseEndpoint = "http://localhost:3000";
   }
 
   fetch(`${baseEndpoint}/ping`)
-    .then(res => res.text())
-    .catch(err => console.error(err))
-    .then(res => console.log(res))
+    .then((res) => res.text())
+    .catch((err) => console.error(err))
+    .then((res) => console.log(res));
 
   return (
     <div className="App">
@@ -65,7 +81,9 @@ export default function App() {
           bot={false}
           email={"me@mail.com"}
           timezone={"America/Denver"}
-          imgUrl={"https://secure.gravatar.com/avatar/fe5373af89a931ab1660970a9b25ff2c.jpg?s=32&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0010-32.png"}
+          imgUrl={
+            "https://secure.gravatar.com/avatar/fe5373af89a931ab1660970a9b25ff2c.jpg?s=32&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0010-32.png"
+          }
           admin={true}
           owner={true}
         />

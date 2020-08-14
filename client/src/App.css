@@ -2,10 +2,6 @@
   text-align: center;
 }
 
-u {
-  border-bottom: #61dafb;
-}
-
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
     animation: App-logo-spin infinite 20s linear;
@@ -47,8 +43,8 @@ u {
 .row p.col {
   font-size: large;
   font-size: 32px;
-
 }
+
 .row p {
   width: 10%;
   font-size: 16px;
