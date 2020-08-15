@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import { format } from "timeago.js";
+import { useInterval } from "./hooks/useInterval";
 import "./App.css";
 
 interface Row {
@@ -15,38 +16,36 @@ interface Row {
 
 const firstRender = Date.now();
 
-const Row = ({
-  user,
-  active,
+const UserRow = ({
   bot,
-  email,
-  imgUrl,
-  timezone,
-  admin,
+  user,
   owner,
+  email,
+  admin,
+  imgUrl,
+  active,
+  timezone,
 }: Row) => (
   <div className="row">
     <p>{user}</p>
-    <p>{active ? "✅" : "❌"}</p>
-    <p>{bot ? "🤖" : "❌"}</p>
-    <p>
-      <a href={`mailto:${email}`} target="_blank">
-        ✉️
-      </a>
-    </p>
+    {active ? <CheckboxEmoji /> : <XboxEmoji />}
+    {bot ? <BotEmoji /> : <XboxEmoji />}
+    <EmailButton email={email} />
     <p>{timezone}</p>
     <p>
       <img src={imgUrl} alt="profile" />
     </p>
-    <p>{admin ? "✅" : "❌"}</p>
-    <p>{owner ? "✅" : "❌"}</p>
+    {admin ? <CheckboxEmoji /> : <XboxEmoji />}
+    {owner ? <CheckboxEmoji /> : <XboxEmoji />}
   </div>
 );
 
 export default function App() {
   let baseEndpoint: string;
 
-  const [refresh, setRresh] = useState(Date.now());
+  const refreshInterval: number = 1000;
+  const [users, setUsers] = useState([]);
+  const [refresh, setRefresh] = useState(firstRender);
 
   if (process.env.NODE_ENV === "production") {
     baseEndpoint = "";
@@ -54,17 +53,28 @@ export default function App() {
     baseEndpoint = "http://localhost:3000";
   }
 
-  fetch(`${baseEndpoint}/ping`)
-    .then((res) => res.text())
-    .catch((err) => console.error(err))
-    .then((res) => console.log(res));
+  const fetchUsers = useCallback(async () => {
+    const res = await fetch(`${baseEndpoint}/ping`);
+    const text = await res.text();
+    console.log(text);
+  }, [baseEndpoint]);
+
+  useEffect(() => {
+    fetchUsers();
+  });
+
+  useInterval(async () => {
+    // TODO: fix time go
+    // const diff: number = Date.now() - firstRender;
+    // setRefresh(Date.now() - diff);
+    fetchUsers();
+  }, refreshInterval);
 
   return (
     <div className="App">
       <header className="App-header">
         <h1>slack user list</h1>
         <p className="App-link">Last refreshed: {format(refresh)}</p>
-        <h2></h2>
         <div className="row">
           <p className="col">user</p>
           <p className="col">active</p>
@@ -75,7 +85,7 @@ export default function App() {
           <p className="col">admin</p>
           <p className="col">owner</p>
         </div>
-        <Row
+        <UserRow
           user={"david"}
           active={true}
           bot={false}
@@ -97,3 +107,37 @@ export default function App() {
     </div>
   );
 }
+
+const CheckboxEmoji = () => (
+  <p>
+    <span role="img" aria-label="check">
+      ✅
+    </span>
+  </p>
+);
+
+const XboxEmoji = () => (
+  <p>
+    <span role="img" aria-label="x">
+      ❌
+    </span>
+  </p>
+);
+
+const BotEmoji = () => (
+  <p>
+    <span role="img" aria-label="x">
+      🤖
+    </span>
+  </p>
+);
+
+const EmailButton = ({ email }: any) => (
+  <p>
+    <a href={`mailto:${email}`} target="_blank" rel="noopener noreferrer">
+      <span role="img" aria-label="email">
+        ✉️
+      </span>
+    </a>
+  </p>
+);
