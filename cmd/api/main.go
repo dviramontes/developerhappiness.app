@@ -37,6 +37,7 @@ func main() {
 	if err != nil {
 		log.Fatalf("failed to connect to database, err: %v", err)
 	}
+	defer database.Conn.Close()
 
 	API := api.New(conf, database)
 
@@ -72,6 +73,7 @@ func main() {
 		r.Route("/webhook", func(r chi.Router) {
 			r.Post("/slack", API.SlackHandler)
 		})
+		r.Get("/users", API.GetUsers)
 	})
 
 	workDir, _ := os.Getwd()

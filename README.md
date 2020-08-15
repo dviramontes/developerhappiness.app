@@ -51,10 +51,13 @@ with goose installed `go get -u github.com/pressly/goose/cmd/goose`
 
 #### create new migration
 
-`goose create -d migrations add_some_column sql`
+`goose -d migrations create add_some_column sql`
 
 #### run migrations
 
 `make migrate`
 
-### Migrations
+### TODO
+
+* [ ] create a separate database for integration tests
+* [ ] separate configs for local, test and prod environments

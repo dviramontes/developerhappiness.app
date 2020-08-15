@@ -59,6 +59,6 @@ type Event struct {
 	Challenge   string   `json:"challenge"`
 }
 
-type Verify struct {
+type Response struct {
 	Challenge string `json:"challenge"`
 }
