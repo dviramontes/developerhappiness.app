@@ -24,7 +24,7 @@ Project layout is based on [golang-standards/project-layout](https://github.com/
 - [golang](https://golang.org/)
 - [docker](https://docs.docker.com/get-docker/)
 - [docker-compose](https://docs.docker.com/compose/install/)
-- [goose for migrations](https://github.com/pressly/goose)
+- (optional) [goose for migrations](https://github.com/pressly/goose)
 - (optional) [google cloud sdk for deployment](https://cloud.google.com/sdk/docs/downloads-versioned-archives)
 
 ### Setup
@@ -60,5 +60,10 @@ with goose installed `go get -u github.com/pressly/goose/cmd/goose`
 
 ### TODO
 
-* [x] create a separate database for integration tests
-* [ ] separate configs for local, test and prod environments
+With more time and bandwidth, this is a list of things I would like to add:
+
+* [ ] Add separate configs for local, test and prod environments
+* [ ] Abstract the API layer into an interaction and a repository so that we can easily mock database interactions without needing an actual DB connection (aka in-memory).
+* [ ] Implement a graphql subscription for subscribing to user updates (slack API <> golang server <> event broker <> gql client)
+* [ ] CI/CD
+
