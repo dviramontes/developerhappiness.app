@@ -114,7 +114,7 @@ const BotEmoji = () => (
   </p>
 );
 
-const EmailButton = ({ email }: any) => (
+const EmailButton: React.FunctionComponent<{ email: string}> = ({ email }) => (
   <p>
     <a href={`mailto:${email}`} target="_blank" rel="noopener noreferrer">
       <span role="img" aria-label="email">
