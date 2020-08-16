@@ -26,7 +26,8 @@ func (a *API) SlackHandler(w http.ResponseWriter, r *http.Request) {
 	var e slack.Event
 
 	if err := json.NewDecoder(r.Body).Decode(&e); err != nil {
-		http.Error(w, "error decoding json payload from slack e webhook", http.StatusInternalServerError)
+		log.Printf("failed to decode json payload from slack event webhook, err: %v", err)
+		http.Error(w, "error decoding json payload from slack event webhook", http.StatusInternalServerError)
 		return
 	}
 

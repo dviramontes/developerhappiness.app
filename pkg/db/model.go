@@ -15,7 +15,7 @@ type User struct {
 	ImgUrl   string `json:"imgUrl"`
 	IsAdmin  bool   `json:"isAdmin"`
 	IsOwner  bool   `json:"isOwner"`
-	IsNew    bool   `gorm:"-;default:false"` // virtual field, not persisted. Used for upserting
+	IsNew    bool   `gorm:"-;default:false"` // virtual field, not persisted. Used for upserts
 }
 
 func (db *DB) CreateUser(u *User) error {
