@@ -1,6 +1,11 @@
 FROM golang:1.14-alpine
 
-RUN apk add git
+RUN apk add --no-cache openssl git
+
+ENV DOCKERIZE_VERSION v0.6.1
+RUN wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-alpine-linux-amd64-$DOCKERIZE_VERSION.tar.gz \
+    && tar -C /usr/local/bin -xzvf dockerize-alpine-linux-amd64-$DOCKERIZE_VERSION.tar.gz \
+    && rm dockerize-alpine-linux-amd64-$DOCKERIZE_VERSION.tar.gz
 
 RUN go get github.com/cespare/reflex
 
@@ -10,4 +15,4 @@ COPY config.yaml /config.yaml
 
 EXPOSE 3000
 
-ENTRYPOINT ["reflex", "-c", "/reflex.conf"]
+CMD ["dockerize", "-wait", "tcp://postgres:5432", "-timeout", "1m", "reflex", "-c", "/reflex.conf"]

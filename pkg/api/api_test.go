@@ -20,7 +20,7 @@ func NewTestRouter(api *API) *chi.Mux {
 
 func Test_API(t *testing.T) {
 	config := config.Read("../../config.yaml", nil)
-	db, err := db.Connect("postgres://postgres:postgres@10.254.254.254:5432?sslmode=disable")
+	db, err := db.Connect("postgres://postgres:postgres@10.254.254.254:5432/happydev?sslmode=disable")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -28,21 +28,18 @@ func Test_API(t *testing.T) {
 	testAPI := New(config, db)
 	router := NewTestRouter(testAPI)
 
-	t.Run("SlackHandler", func(t *testing.T) {
+	t.Run("slack event handle: url_verification", func(t *testing.T) {
 		var e slack.Event
-
-		challenge := "super-challenging-token"
+		challenge := "challenge-token"
 		testEvent := &slack.Event{
 			Token:     "123",
 			Challenge: challenge,
-			Type:      "event_callback",
+			Type:      "url_verification",
 		}
-
 		jsonPayload, err := json.Marshal(testEvent)
 		if err != nil {
 			t.Fatal(err)
 		}
-
 		res, err := http.NewRequest(
 			"POST",
 			"/api/webhook/slack",
@@ -51,11 +48,9 @@ func Test_API(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-
 		if err := json.NewDecoder(res.Body).Decode(&e); err != nil {
 			t.Error(err)
 		}
-
 		if e.Challenge != challenge {
 			t.Error("challenge token does not match!")
 		}

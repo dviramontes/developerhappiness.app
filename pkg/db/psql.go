@@ -29,11 +29,12 @@ func (db *DB) Seed() error {
 		ImgUrl:   "https://secure.gravatar.com/avatar/fe5373af89a931ab1660970a9b25ff2c.jpg?s=32&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0010-32.png",
 		IsAdmin:  true,
 		IsOwner:  true,
+		IsNew:    true,
 	}
 
 	if err := db.Conn.
 		Where(&User{Email: owner.Email}).
-		Attrs(User{IsNew: true}).FirstOrCreate(&owner).Error; err != nil {
+		Attrs(owner).FirstOrCreate(&owner).Error; err != nil {
 		return err
 	}
 

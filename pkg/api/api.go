@@ -6,6 +6,7 @@ import (
 	"github.com/dviramontes/developerhappiness.app/pkg/db"
 	"github.com/dviramontes/developerhappiness.app/pkg/slack"
 	"github.com/spf13/viper"
+	"log"
 	"net/http"
 )
 
@@ -29,7 +30,12 @@ func (a *API) SlackHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	res := a.Route(&e)
+	res, err := a.Route(&e)
+	if err != nil {
+		log.Printf("failed to process event from slack API, err: %v", err)
+		http.Error(w, "error processing event from slack API", http.StatusInternalServerError)
+		return
+	}
 
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(res)
@@ -42,22 +48,67 @@ func (a *API) GetUsers(w http.ResponseWriter, r *http.Request) {
 	}
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(users)
-
 }
 
-func (a *API) Route(event *slack.Event) slack.Response {
-	switch event.Type {
-	case "url_verification":
+func (a *API) Route(event *slack.Event) (slack.Response, error) {
+	if event.Type == "url_verification" {
 		// respond with JSON challenge token
-		return slack.Response{Challenge: event.Challenge}
-	case "member_joined_channel":
-		// TODO: handle
-	case "team_join":
-		// TODO: handle
-	case "user_change":
-		// TODO: handle
-	default:
-		return slack.Response{}
+		return slack.Response{Challenge: event.Challenge}, nil
 	}
-	return slack.Response{}
+
+	if event.Type == "event_callback" {
+		incoming := event.Event.User
+		active := !incoming.Deleted
+
+		switch event.Event.Type {
+		case "user_change":
+			var u db.User
+			//.Where("name = ?", "jinzhu")
+			//.Where("name LIKE ?", "%jin%").Find(&users)
+			if err := a.db.Conn.
+				Where("slack_id ILIKE ?", fmt.Sprintf("%s", incoming.ID)).
+				First(&u).Error; err != nil {
+				return slack.Response{}, err
+			}
+
+			u.Name = incoming.Name
+			u.Active = incoming.Deleted
+			u.IsBot = incoming.IsBot
+			u.Email = incoming.Profile.Email
+			u.Timezone = incoming.Tz
+			u.ImgUrl = incoming.Profile.Image32
+			u.IsAdmin = incoming.IsAdmin
+			u.IsOwner = incoming.IsOwner
+
+			a.db.Conn.Save(&u)
+
+			return slack.Response{}, nil
+
+		case "team_join":
+			newUser := db.User{
+				Name:     incoming.Name,
+				Active:   active,
+				IsBot:    incoming.IsBot,
+				Email:    incoming.Profile.Email,
+				Timezone: incoming.Tz,
+				ImgUrl:   incoming.Profile.Image32,
+				IsAdmin:  incoming.IsAdmin,
+				IsOwner:  incoming.IsOwner,
+				IsNew:    true,
+			}
+			if err := a.db.Conn.
+				Where(&db.User{SlackId: incoming.ID}).
+				Attrs(newUser).FirstOrCreate(&newUser).Error; err != nil {
+				return slack.Response{}, err
+			}
+			return slack.Response{}, nil
+		case "member_joined_channel":
+			// TODO: handle invitations ?
+			fallthrough
+		default:
+			return slack.Response{}, nil
+		}
+	}
+
+	return slack.Response{}, nil
 }

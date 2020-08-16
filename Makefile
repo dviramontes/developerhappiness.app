@@ -26,4 +26,4 @@ down:
 	docker-compose down
 
 migrate:
-	goose -dir migrations postgres "user=postgres password=postgres dbname=postgres sslmode=disable" up
+	goose -dir migrations postgres "user=postgres password=postgres dbname=happydev sslmode=disable" up
