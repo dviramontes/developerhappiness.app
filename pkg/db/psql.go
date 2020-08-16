@@ -30,6 +30,7 @@ func (db *DB) Seed() error {
 		IsAdmin:  true,
 		IsOwner:  true,
 		IsNew:    true,
+		SlackId:  "U019AN9CH88",
 	}
 
 	if err := db.Conn.

@@ -63,16 +63,14 @@ func (a *API) Route(event *slack.Event) (slack.Response, error) {
 		switch event.Event.Type {
 		case "user_change":
 			var u db.User
-			//.Where("name = ?", "jinzhu")
-			//.Where("name LIKE ?", "%jin%").Find(&users)
 			if err := a.db.Conn.
-				Where("slack_id ILIKE ?", fmt.Sprintf("%s", incoming.ID)).
+				Where("slack_id LIKE ?", fmt.Sprintf("%%%s%%", incoming.ID)).
 				First(&u).Error; err != nil {
 				return slack.Response{}, err
 			}
 
 			u.Name = incoming.Name
-			u.Active = incoming.Deleted
+			u.Active = active
 			u.IsBot = incoming.IsBot
 			u.Email = incoming.Profile.Email
 			u.Timezone = incoming.Tz
@@ -94,13 +92,14 @@ func (a *API) Route(event *slack.Event) (slack.Response, error) {
 				ImgUrl:   incoming.Profile.Image32,
 				IsAdmin:  incoming.IsAdmin,
 				IsOwner:  incoming.IsOwner,
+				SlackId:  incoming.ID,
 				IsNew:    true,
 			}
-			if err := a.db.Conn.
-				Where(&db.User{SlackId: incoming.ID}).
-				Attrs(newUser).FirstOrCreate(&newUser).Error; err != nil {
+
+			if err := a.db.CreateUser(&newUser); err != nil {
 				return slack.Response{}, err
 			}
+
 			return slack.Response{}, nil
 		case "member_joined_channel":
 			// TODO: handle invitations ?
