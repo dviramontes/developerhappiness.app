@@ -1,23 +1,20 @@
-// build+ integration
+// +build integration
 
 package db
 
 import (
-	"github.com/dviramontes/developerhappiness.app/internal/config"
 	"github.com/jinzhu/gorm"
 	"testing"
 )
 
 const (
-	deleteTestUser = `DELETE FROM users WHERE email = 'bot@bot.com'`
+	truncateUsersTable = `TRUNCATE TABLE users;`
 )
 
-func TestDB_CreateUser(t *testing.T) {
-	config := config.Read("../../config.yaml", nil)
-	connStr := config.GetString("connStr")
-	database, err := Connect(connStr)
+func TestDB_UserModel(t *testing.T) {
+	database, err := Connect("postgres://postgres:postgres@10.254.254.254:5432/happydev_test?sslmode=disable")
 	if err != nil {
-		t.Fatalf("failed to connect to database from test, err: %v", err)
+		t.Fatalf("failed to connect to database from integration test, err: %v", err)
 	}
 	type fields struct {
 		conn *gorm.DB
@@ -59,11 +56,21 @@ func TestDB_CreateUser(t *testing.T) {
 			if err := db.CreateUser(tt.args.user); (err != nil) != tt.wantErr {
 				t.Errorf("CreateUser() error = %v, wantErr %v", err, tt.wantErr)
 			}
+
+			users, err := db.GetUsers()
+			if err != nil {
+				t.Fatalf("GetUsers() error = %v, wantErr %v", err, tt.wantErr)
+			}
+
+			if len(users) != 2 { // bot + seed user
+				t.Errorf("GetUsers() failed to retrieve correct number of users got = %d, wanted %d", len(users), 2)
+
+			}
 		})
 	}
 
 	t.Cleanup(func() {
-		_, err := database.Conn.DB().Exec(deleteTestUser)
+		_, err := database.Conn.DB().Exec(truncateUsersTable)
 		if err != nil {
 			t.Fatalf("failed to clean users table in advertising db, err: %v", err)
 		}

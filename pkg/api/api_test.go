@@ -1,3 +1,5 @@
+// +build integration
+
 package api
 
 import (
@@ -20,7 +22,7 @@ func NewTestRouter(api *API) *chi.Mux {
 
 func Test_API(t *testing.T) {
 	config := config.Read("../../config.yaml", nil)
-	db, err := db.Connect("postgres://postgres:postgres@10.254.254.254:5432/happydev?sslmode=disable")
+	db, err := db.Connect("postgres://postgres:postgres@10.254.254.254:5432/happydev_test?sslmode=disable")
 	if err != nil {
 		t.Fatal(err)
 	}

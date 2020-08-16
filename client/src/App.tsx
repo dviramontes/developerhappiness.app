@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect } from "react";
-import * as dayjs from 'dayjs';
+import { default as dayjs } from "dayjs";
 import { useInterval } from "./hooks/useInterval";
 import "./App.css";
 
@@ -30,9 +30,7 @@ const UserRow = ({
     {isBot ? <BotEmoji /> : <XboxEmoji />}
     <EmailButton email={email} />
     <p>{timezone}</p>
-    <p>
-      { imgUrl === "" ? "n/a" : <img src={imgUrl} alt="profile" />}
-    </p>
+    <p>{imgUrl === "" ? "n/a" : <img src={imgUrl} alt="profile" />}</p>
     {isAdmin ? <CheckboxEmoji /> : <XboxEmoji />}
     {isOwner ? <CheckboxEmoji /> : <XboxEmoji />}
   </div>
@@ -55,7 +53,7 @@ export default function App() {
     const res = await fetch(`${baseEndpoint}/api/users`);
     const users = await res.json();
     setUsers(users);
-    setRefresh(Date.now())
+    setRefresh(Date.now());
   }, []);
 
   useEffect(() => {
@@ -70,7 +68,10 @@ export default function App() {
     <div className="App">
       <header className="App-header">
         <h1>slack user list</h1>
-        <p className="App-link">Last refresh: ...</p>
+        <p className="App-subheader">
+          Refreshes every 10s. Last refresh:{" "}
+          <span className="blue">{dayjs(refresh).format("hh:mm:ss")}</span>
+        </p>
         <div className="row">
           <p className="col">user</p>
           <p className="col">active</p>

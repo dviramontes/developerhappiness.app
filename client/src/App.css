@@ -19,8 +19,12 @@
   color: white;
 }
 
-.App-link {
+.blue {
   color: #61dafb;
+}
+
+.App-subheader {
+  font-size: medium;
 }
 
 @keyframes App-logo-spin {

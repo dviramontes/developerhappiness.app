@@ -1,0 +1,32 @@
+version: '3.8'
+services:
+  postgres:
+    container_name: "devhappy-test-postgres"
+    image: postgres:latest
+    restart: always
+    environment:
+      POSTGRES_DB: happydev_test
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - 5432:5432
+    command: postgres -c 'max_connections=500'
+    volumes:
+      - ./pg-test-data:/var/lib/postgresql/data
+  api:
+    container_name: "devhappy-api-test"
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    volumes:
+      - ../developerhappiness.app:/app
+    working_dir: /app
+    ports:
+      - "3000:3000"
+    depends_on:
+      - postgres
+    environment:
+      PORT: 3000
+
+volumes:
+  pg-test-data:

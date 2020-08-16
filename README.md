@@ -39,7 +39,8 @@ Project layout is based on [golang-standards/project-layout](https://github.com/
 
 ### Tests
 
-- `make test` # runs server tests
+- `make test` # runs unit tests
+- `make test-ci` # runs integration tests
 
 ### Deploy
 
@@ -59,5 +60,5 @@ with goose installed `go get -u github.com/pressly/goose/cmd/goose`
 
 ### TODO
 
-* [ ] create a separate database for integration tests
+* [x] create a separate database for integration tests
 * [ ] separate configs for local, test and prod environments

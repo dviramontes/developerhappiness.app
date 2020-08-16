@@ -1,4 +1,4 @@
-.PHONY: deps server test build client prod deploy down migrate
+.PHONY: deps server test test-ci build client prod deploy down migrate
 
 deps:
 	go get ./...
@@ -12,6 +12,12 @@ server:
 
 test:
 	go test -v ./...
+
+test-ci:
+	docker-compose -f ./docker-compose.test.yaml build
+	docker-compose -f ./docker-compose.test.yaml up -d
+	go test -v --tags=integration ./...
+	docker-compose -f ./docker-compose.test.yaml down
 
 client:
 	cd client && npm start
