@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect } from "react";
-import { format } from "timeago.js";
+import * as dayjs from 'dayjs';
 import { useInterval } from "./hooks/useInterval";
 import "./App.css";
 
@@ -13,8 +13,6 @@ interface IUser {
   isAdmin: boolean;
   isOwner: boolean;
 }
-
-const firstRender = Date.now();
 
 const UserRow = ({
   name,
@@ -45,7 +43,7 @@ export default function App() {
 
   const refreshInterval: number = 1000 * 10;
   const [users, setUsers] = useState([]);
-  const [refresh, setRefresh] = useState(firstRender);
+  const [refresh, setRefresh] = useState(Date.now());
 
   if (process.env.NODE_ENV === "production") {
     baseEndpoint = "";
@@ -57,6 +55,7 @@ export default function App() {
     const res = await fetch(`${baseEndpoint}/api/users`);
     const users = await res.json();
     setUsers(users);
+    setRefresh(Date.now())
   }, []);
 
   useEffect(() => {
@@ -64,9 +63,6 @@ export default function App() {
   }, []);
 
   useInterval(async () => {
-    // TODO: last refreshed / time ago
-    // const diff: number = Date.now() - firstRender;
-    // setRefresh(Date.now() - diff);
     await fetchUsers();
   }, refreshInterval);
 
@@ -74,7 +70,7 @@ export default function App() {
     <div className="App">
       <header className="App-header">
         <h1>slack user list</h1>
-        <p className="App-link">Last refreshed: {format(refresh)}</p>
+        <p className="App-link">Last refresh: ...</p>
         <div className="row">
           <p className="col">user</p>
           <p className="col">active</p>

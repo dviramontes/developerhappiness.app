@@ -40,16 +40,12 @@
   width: 85%;
 }
 
-.row p.col {
-  font-size: large;
-  font-size: 32px;
-}
-
 .row p {
   width: 10%;
   font-size: 16px;
 }
 
 .col {
+  font-size: 16px;
   color: lightgray;
 }
