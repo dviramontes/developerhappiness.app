@@ -11,7 +11,7 @@ type DB struct {
 	Conn *gorm.DB
 }
 
-func new(db *gorm.DB) *DB {
+func newDB(db *gorm.DB) *DB {
 	return &DB{db}
 }
 
@@ -51,7 +51,7 @@ func Connect(connStr string) (*DB, error) {
 	log.Println("database connection successfully opened")
 
 	// init db models and migrate
-	db := new(pgdb)
+	db := newDB(pgdb)
 	db.Migrate()
 
 	log.Println("database migrated")

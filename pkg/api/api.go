@@ -23,15 +23,15 @@ func New(c *viper.Viper, db *db.DB) *API {
 }
 
 func (a *API) SlackHandler(w http.ResponseWriter, r *http.Request) {
-	var e slack.Event
+	var n slack.Notification
 
-	if err := json.NewDecoder(r.Body).Decode(&e); err != nil {
+	if err := json.NewDecoder(r.Body).Decode(&n); err != nil {
 		log.Printf("failed to decode json payload from slack event webhook, err: %v", err)
 		http.Error(w, "error decoding json payload from slack event webhook", http.StatusInternalServerError)
 		return
 	}
 
-	res, err := a.Route(&e)
+	res, err := a.Route(&n)
 	if err != nil {
 		log.Printf("failed to process event from slack API, err: %v", err)
 		http.Error(w, "error processing event from slack API", http.StatusInternalServerError)
@@ -51,17 +51,17 @@ func (a *API) GetUsers(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(users)
 }
 
-func (a *API) Route(event *slack.Event) (slack.Response, error) {
-	if event.Type == "url_verification" {
+func (a *API) Route(n *slack.Notification) (slack.Response, error) {
+	if n.Type == "url_verification" {
 		// respond with JSON challenge token
-		return slack.Response{Challenge: event.Challenge}, nil
+		return slack.Response{Challenge: n.Challenge}, nil
 	}
 
-	if event.Type == "event_callback" {
-		incoming := event.Event.User
+	if n.Type == "event_callback" {
+		incoming := n.Event.User
 		active := !incoming.Deleted
 
-		switch event.Event.Type {
+		switch n.Event.Type {
 		case "user_change":
 			var u db.User
 			if err := a.db.Conn.

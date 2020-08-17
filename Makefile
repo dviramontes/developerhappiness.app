@@ -15,8 +15,7 @@ test:
 
 test-ci:
 	docker-compose -f ./docker-compose.test.yaml build
-	docker-compose -f ./docker-compose.test.yaml up -d
-	go test -v --tags=integration ./...
+	docker-compose -f ./docker-compose.test.yaml up -d && go test -v --tags=integration ./...
 	docker-compose -f ./docker-compose.test.yaml down
 
 client:

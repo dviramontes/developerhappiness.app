@@ -2,7 +2,7 @@
 
 > A web application that syncs users from slack workspace and displays them as a list
 
-Project layout is based on [golang-standards/project-layout](https://github.com/golang-standards/project-layout)
+Project layout based on [golang-standards/project-layout](https://github.com/golang-standards/project-layout)
 
 ### Project Layout
 
@@ -48,7 +48,7 @@ Project layout is based on [golang-standards/project-layout](https://github.com/
 
 ### Migrations
 
-with goose installed `go get -u github.com/pressly/goose/cmd/goose`
+With goose installed, run: `go get -u github.com/pressly/goose/cmd/goose`
 
 #### create new migration
 
